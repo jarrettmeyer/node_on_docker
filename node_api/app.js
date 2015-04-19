@@ -17,11 +17,13 @@ program
 var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-onStartup(function (error, result) {
+app.use(logErrors);
+
+onStartup(function (error) {
     if (error) {
         console.error('Error in onStartup function: ', error);
     } else {
-        console.log('Finished onStartup:', result);
+        console.log('Finished onStartup.');
     }
 });
 
@@ -31,6 +33,11 @@ function handleCallback(response, error, result) {
         return response.status(500).json(error);
     }
     return response.status(200).json(result);
+}
+
+function logErrors(error, request, response, next) {
+    console.error(error.stack);
+    next(error);
 }
 
 app.get('/', function (request, response) {
