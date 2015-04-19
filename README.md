@@ -17,13 +17,36 @@ $ vagrant up
 $ ./start_app.sh
 ```
 
+### Ports
+
+The following ports are exposed by the Vagrant VM.
+
++ 5984 - Exposes CouchDB to the host.
++ 8080 - Exposes the web client and API to the host.
+
 ## Testing
 
 ### Testing CouchDB from the host
 
-Point your browser to [http://localhost:5984](http://localhost:5984).
+Point your browser to [http://localhost:5984](http://localhost:5984). The CouchDB installation we are using has 
+[Futon](http://docs.couchdb.org/en/latest/intro/futon.html) installed.
 
-### Testing the NodeJS API
+![Futon](https://raw.githubusercontent.com/jarrettmeyer/node_on_docker/master/images/futon.png)
+
+### Testing the NodeJS API from the host
+
+You can test the API from your host machine by making a `curl` request.
+
+```
+$ curl -X GET http://localhost:8080/api/
+{"message":"Hello World!","timestamp":"2015-04-19T15:16:19.705Z"}
+```
+
+Or, you can do the same thing from your browser by going to [http://localhost:8080/api/](http://localhost:8080/api/).
+
+![GET /api](https://raw.githubusercontent.com/jarrettmeyer/node_on_docker/master/images/GET_api.png)
+
+### Testing the NodeJS API from the Vagrant VM
 
 The following tests can be run from inside the Vagrant VM. You will first need to `vagrant ssh` into the virtual 
 machine.
