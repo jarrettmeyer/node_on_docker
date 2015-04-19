@@ -1,5 +1,7 @@
 var bodyParser = require('body-parser');
 var express = require('express');
+var getMessageById = require('./lib/getMessageById');
+var getMessages = require('./lib/getMessages');
 var onStartup = require('./lib/onStartup');
 var program = require('commander');
 var saveMessage = require('./lib/saveMessage');
@@ -38,8 +40,19 @@ app.get('/', function (request, response) {
     });
 });
 
+app.get('/messages', function (request, response) {
+    return getMessages(function (error, result) {
+        return handleCallback(response, error, result);
+    });
+});
+
+app.get('/messages/:id', function (request, response) {
+    return getMessageById(request.params.id, function (error, result) {
+        return handleCallback(response, error, result);
+    });
+});
+
 app.post('/messages', function (request, response) {
-    console.log(request.body);
     return saveMessage(request.body.message, function (error, result) {
         return handleCallback(response, error, result);
     });

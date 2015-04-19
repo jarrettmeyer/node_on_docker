@@ -1,0 +1,6 @@
+couchdb:
+  image: klaemo/couchdb:latest
+  ports:
+  - "5984:5984"
+node_api:
+client_app:
