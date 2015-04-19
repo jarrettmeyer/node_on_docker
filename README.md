@@ -10,8 +10,8 @@ This is a demo project that will accomplish the following...
     
 ## Usage
 
-First, make sure you have installed the latest version of Vagrant. Clone this repository, and run these two commands 
-from your host machine. They take a while. Go make a sandwich.
+First, make sure you have installed the latest version of Vagrant. Clone this repository, and provision the Vagrant VM.
+This takes a while. Go make a sandwich.
 
 ```
 $ vagrant up
@@ -20,7 +20,7 @@ $ vagrant ssh
 
 You are now inside your VM and ready to start your application. Change to your application directory (this gets mounted
 as `/home/vagrant/docker_demo`) and start up this application. This will build your Docker containers and run them. This
-will take a while to run - longer than the `vagrant up` step took.
+will take a while to run &mdash; longer than the `vagrant up` step took.
 
 ```
 $ cd /home/vagrant/docker_demo
