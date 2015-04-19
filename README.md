@@ -10,19 +10,59 @@ This is a demo project that will accomplish the following...
     
 ## Usage
 
-First, make sure you have installed the latest version of Vagrant.
+First, make sure you have installed the latest version of Vagrant. Clone this repository, and run these two commands 
+from your host machine. They take a while. Go make a sandwich.
 
 ```
 $ vagrant up
+$ vagrant ssh
+```
+
+You are now inside your VM and ready to start your application. Change to your application directory (this gets mounted
+as `/home/vagrant/docker_demo`) and start up this application. This will build your Docker containers and run them. This
+will take a while to run - longer than the `vagrant up` step took.
+
+```
+$ cd /home/vagrant/docker_demo
 $ ./start_app.sh
 ```
+
+Now, point your host's browser to [http://localhost:8080](http://localhost:8080) to see the running application.
+
+### How it works
+
+Let's start with the `Vagrantfile`. This provisions an [Ubuntu](http://www.ubuntu.com/) virtual machine running v14.04
+64-bit server. Onto this VM, we install Docker, [nginx](http://nginx.org/), and NodeJS.
+
+On this machine, nginx serves as a reverse proxy. It does not serve any web pages. It does, however, forward requests
+from the VM to the appropriate ports. See the `vagrant/nginx.conf` file for more details.
+
+There are three Docker containers in our application &mdash; once each for the database, the API, and the client 
+application. We will discuss these containers in their own sections.
 
 ### Ports
 
 The following ports are exposed by the Vagrant VM.
 
-+ 5984 - Exposes CouchDB to the host.
-+ 8080 - Exposes the web client and API to the host.
++   5984 - Exposes CouchDB to the host. This is not necessary for running the application. However it is required if 
+    you want to browse your CouchDB data from your host machine.
++   8080 - Exposes the web client and API to the host. This port is required.
+
+### CouchDB Docker container
+
+The [CouchDB container](https://registry.hub.docker.com/u/klaemo/couchdb/) is a ready-to-run container with CouchDB
+installed in the container. Port 5984 is forwarded from the VM, and the data volumes are mounted in the Vagrant VM.
+
+### nginx Docker container
+
+The [nginx container](https://registry.hub.docker.com/u/library/nginx/) is a ready-to-run container that mounts your
+web application and runs it internally on port 80. Our `docker run` is setup to forward requests from port 8000 to the
+container port 80.
+
+### NodeJS Docker container
+
+The NodeJS container is a simple ExpressJS application. It is built on top of NodeJS 0.12.2. Inside the container, the
+API application runs on port 3000. This port is forwarded from the VM.
 
 ## Testing
 
@@ -109,7 +149,7 @@ $ node ./examples/test_getOne.js 31c26d78f752cc82c70020e94a005eb1
   timestamp: '2015-04-19T14:26:18.886Z' }
 ```
 
-## Notes
+## Notes and Issues
 
 ### Getting Docker containers to talk to each other
 
@@ -119,3 +159,38 @@ the Docker container.
 
 This is only required because the two Docker containers are on the same (virtual) machine. If the two containers were on
 two different machines, this extra step would not be necessary.
+
+### Nothing opens in host
+
+Make sure that nginx is running in the VM.
+
+```
+$ sudo service nginx status
+ * nginx is running
+```
+
+Make sure that all of your docker containers are running. You should see three running containers. *Note: You will have 
+different container IDs, but that does not matter.*
+
+```
+$ sudo docker ps
+CONTAINER ID        IMAGE                   COMMAND                CREATED             STATUS              PORTS                           NAMES
+ce47d59a4124        client_app:latest       "nginx -g 'daemon of   3 minutes ago       Up 3 minutes        443/tcp, 0.0.0.0:8000->80/tcp   client_app
+d8036029d53b        node_api:latest         "node /src/app.js"     14 minutes ago      Up 14 minutes       0.0.0.0:3000->3000/tcp          node_api
+97577f40ff49        klaemo/couchdb:latest   "/entrypoint.sh couc   25 minutes ago      Up 25 minutes       0.0.0.0:5984->5984/tcp          couchdb
+```
+
+### Running on a Windows host
+
+Trying starting with [MinGW](http://www.mingw.org/), instead of cmd.
+
+### Why are the data volumes mounted on the CouchDB container?
+
+**Docker is not to be trusted with data. If you stop the container, you will lose your data!** The power of Docker is 
+that is always started from when the container was last built. Changes that occur inside the container over the 
+container's lifetime are lost when the container is stopped and restarted. You should **always** store your data 
+outside of your Docker container.
+
+The CouchDB `Dockerfile` creates mountable volumes available at  `/usr/local/var/log/couchdb` and 
+`/var/lib/couchdb:/usr/local/var/lib/couchdb`. In our `run.sh` file, we mount those volumes locally with the `-v` 
+command line switch. 
