@@ -1,5 +1,4 @@
-var cradle = require('cradle');
-var db = (new cradle.Connection()).database('docker_demo');
+var db = require('./getDatabase')();
 
 module.exports = saveMessage;
 function saveMessage(message, callback) {

@@ -6,3 +6,4 @@
 sudo docker stop node_api
 sudo docker rm node_api
 ./build.sh
+./run.sh

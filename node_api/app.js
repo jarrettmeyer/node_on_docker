@@ -1,5 +1,6 @@
 var bodyParser = require('body-parser');
 var express = require('express');
+var onStartup = require('./lib/onStartup');
 var program = require('commander');
 var saveMessage = require('./lib/saveMessage');
 
@@ -14,13 +15,20 @@ program
 var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+onStartup(function (error, result) {
+    if (error) {
+        console.error('Error in onStartup function: ', error);
+    } else {
+        console.log('Finished onStartup:', result);
+    }
+});
 
 function handleCallback(response, error, result) {
     if (error) {
         console.error(error);
         return response.status(500).json(error);
     }
-    return resposne.status(200).json(result);
+    return response.status(200).json(result);
 }
 
 app.get('/', function (request, response) {

@@ -5,6 +5,13 @@
   "scripts": {
     "start": "node app.js"
   },
+  "config": {
+    "couchdb": {
+      "host": "127.0.0.1",
+      "port": 5984,
+      "database": "docker_demo"
+    }
+  },
   "dependencies": {
     "body-parser": "^1.12.3",
     "commander": "^2.8.0",
