@@ -1,17 +1,33 @@
 ;(function () {
 
+    function displayMessages(messages) {
+        messages.forEach(function (message) {
+            var content = '<tr id="message-' + message._id + '">';
+            content += '<td>' + message.timestamp + '</td>';
+            content += '<td>' + message.message + '</td>';
+            content += '</tr>';
+            $('#messages-body').prepend(content);
+        });
+    }
+
     function loadMessages() {
         console.log('loading messages...');
         $.get('/api/messages', function (result) {
             console.log(result);
-            if (result && result.data) {
-                console.log('Fetched', result.data.length, 'messages');
+            if (result) {
+                console.log('Fetched', result.length, 'messages');
+                displayMessages(result);
             }
         });
     }
 
     function saveMessage() {
         var message = $('#message').val();
+        console.log('message:', message);
+        $.post('/api/messages', { message: message }, function (result) {
+            var result = [].concat(result);
+            displayMessages(result);
+        });
     }
 
     $('#my-form').on('submit', function () {

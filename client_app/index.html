@@ -11,8 +11,24 @@
         form {
             margin-bottom: 20px;
         }
+        input[type=text] {
+            padding: 4px;
+            border: 1px solid #c0c0c0;
+            border-radius: 5px;
+        }
         table {
-
+            border-collapse: collapse;
+            width: 100%;
+        }
+        tbody tr {
+            border-top: 1px solid #c0c0c0;
+        }
+        td {
+            padding: 4px;
+        }
+        thead tr {
+            border-bottom: 1px solid #c0c0c0;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -33,8 +49,7 @@
                 <th>Message</th>
             </tr>
         </thead>
-        <tbody>
-
+        <tbody id="messages-body">
         </tbody>
     </table>
 
