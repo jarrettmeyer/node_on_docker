@@ -192,5 +192,5 @@ container's lifetime are lost when the container is stopped and restarted. You s
 outside of your Docker container.
 
 The CouchDB `Dockerfile` creates mountable volumes available at  `/usr/local/var/log/couchdb` and 
-`/var/lib/couchdb:/usr/local/var/lib/couchdb`. In our `run.sh` file, we mount those volumes locally with the `-v` 
+`/usr/local/var/lib/couchdb`. In our `run.sh` file, we mount those volumes locally with the `-v` 
 command line switch. 
